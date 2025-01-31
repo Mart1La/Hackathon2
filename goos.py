@@ -23,12 +23,12 @@ BACKGROUND = arcade.color.ALMOND
 GOO = "media/goo.png"
 SIZE_GOO = 50 # Taille en pixels, longueur comme largeur comme diametre
 
-WIDTH, LENGTH = 1200, 800
+WIDTH, LENGTH = 1200, 700
 CRITICAL_DISTANCE = 300 # Distance à partir de laquelle on considere les autres goos
 PLATEFORME = "media/plateforme3.png"
-#DETECTION_RADIUS = 15  # Rayon de détection en pixels (pour transparence)
-#RAYON = 30             # Rayon pour contournement
-#NB_BOID = 20
+TITLE = "Worlds of Goo"
+PLATEFORME = "data/plateforme3.png"
+Spread = 0.1
 
 class Goo(arcade.Sprite):
     
@@ -43,7 +43,7 @@ class Goo(arcade.Sprite):
     #     self.prev_x, self.prev_y = self.center_x, self.center_y
 
 
-    def on_update(self, delta_time, obstacles):
+    def on_update(self, delta_time):
         pass
 
         # self.center_x = (self.center_x + self.speed*delta_time * math.cos(math.radians(self.angle))) % WIDTH
@@ -75,46 +75,31 @@ class Goo(arcade.Sprite):
         # self.prev_y = self.center_y
 
 class Plateform(arcade.Sprite):
-    # def __init__(self, x, y):
-    #     super().__init__(OBSTACLE)
-    #     self.center_x = x
-    #     self.center_y = y
+
+    def __init__(self, n):
+        super().__init__(PLATEFORME)
+        if n == 0:
+            self.center_x = (WIDTH / 4) * (1+rd.uniform(-Spread, Spread))
+        else : 
+            self.center_x = (3 * WIDTH / 4) * (1+rd.uniform(-Spread, Spread))
+        self.center_y = (LENGTH / 2)*(1+rd.uniform(-Spread, Spread))
 
 class Window(arcade.Window):
 
-    # def __init__(self):
-    #     super().__init__(WIDTH, LENGTH, "My first boid")
-    #     arcade.set_background_color(BACKGROUND)
-    #     self.set_location(800, 100)
-    #     self.boids = arcade.SpriteList()
+    def __init__(self):
+        super().__init__(WIDTH, LENGTH, TITLE)
+        arcade.set_background_color(BACKGROUND)
+        self.set_location(400, 100)
+        self.plateforms = arcade.SpriteList()
 
-    #     # Liste pour stocker les obstacles
-    #     self.obstacles = arcade.SpriteList()   
+    def setup(self):
+        for n in range(0, 2):
+            plateform = Plateform(n)
+            self.plateforms.append(plateform)
 
-    #     # Garde en mémoire les touches maintenues enfoncées
-    #     self.keys_pressed = set()           
-
-    # def setup(self):
-    #     for _ in range(NB_BOID):
-    #         boid = Boid()
-    #         self.boids.append(boid)
-
-    #     # Créer la grille d'obstacles
-    #     grid_size = 10      # 10x10 obstacles
-    #     spacing = 80        # Espacement de 80px entre chaque obstacle
-        
-    #     for row in range(grid_size):
-    #         for col in range(grid_size):
-    #             # Calculer la position de chaque obstacle
-    #             x = col * spacing + 40  # Décaler un peu pour centrer la grille
-    #             y = row * spacing + 40  # Décaler un peu pour centrer la grille
-    #             obstacle = Obstacle(x, y)
-    #             self.obstacles.append(obstacle)
-
-    # def on_draw(self):
-    #     arcade.start_render()
-    #     self.boids.draw()
-    #     self.obstacles.draw()
+    def on_draw(self):
+        arcade.start_render()
+        self.plateforms.draw()
 
     # def on_key_press(self, symbol, modifiers):
     #     self.keys_pressed.add(symbol)
@@ -122,12 +107,9 @@ class Window(arcade.Window):
     # def on_key_release(self, symbol, modifiers):
     #     self.keys_pressed.discard(symbol)
 
-    # def on_update(self, delta_time):
-    #     # Si la flèche gauche est pressée, on tourne vers la gauche
-    #     if arcade.key.LEFT in self.keys_pressed:
-    #         for boid in self.boids:
-    #             boid.angle += 5
-        
+    def on_update(self, delta_time):
+        pass
+
     #     # Si la flèche droite est pressée, on tourne vers la droite
     #     if arcade.key.RIGHT in self.keys_pressed:
     #         for boid in self.boids:
