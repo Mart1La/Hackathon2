@@ -20,7 +20,7 @@ import numpy as np
 
 #################################################################################################
 
-# Constantes globales
+# Variables globales
 BACKGROUND = arcade.color.ALMOND
 GOO = "media/goo.png"
 SIZE_GOO = 50   # Taille en pixels, longueur comme largeur comme diametre
@@ -50,7 +50,7 @@ class Goo(arcade.Sprite):
         # self.center_x[1] += (1 - 2*random.random()) * NOISE_POSITION
         # self.center_y[1] += (1 - 2*random.random()) * NOISE_POSITION
 
-        # # Pour rester dans la fenêtre ; à voir...
+        # Pour rester dans la fenêtre ; à voir...
         # self.center_x %= HEIGHT
         # self.center_y %= WIDTH
         pass
@@ -125,6 +125,7 @@ class Window(arcade.Window):
 
 
 # Lancement du jeu
+
 window = Window()
 window.setup()
 arcade.run()
