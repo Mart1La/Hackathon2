@@ -21,6 +21,7 @@ import numpy as np
 #################################################################################################
 
 # Variables globales
+
 BACKGROUND = arcade.color.SKY_BLUE
 GOO = "data/goo.png"
 SIZE_GOO = 50   # Taille en pixels, longueur comme largeur comme diametre
