@@ -25,7 +25,7 @@ class Obstacle(arcade.Sprite):
     def __init__(self):
         super().__init__(BIERE)
         self.center_x = WIDTH / 2
-        self.center_y = 3 * HEIGHT / 4
+        self.center_y = 5 * HEIGHT / 6
 
 class StartOrFinish(arcade.Sprite):
     def __init__(self, n, x, y):
