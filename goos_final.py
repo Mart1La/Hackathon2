@@ -13,11 +13,11 @@ CRITICAL_DISTANCE = 200     # Distance à partir de laquelle on considère les a
 TITLE = "Worlds of Goo"
 PLATEFORME = "data/plateforme3.png"
 Spread = 0.1
-g = 9.81 * 10
+g = 9.81 * 5
 k = 0.5
 m = 0.4
 
-NOISE_POSITION = 0.2
+# NOISE_POSITION = 0.2
 
 LINK = "data/link.png"
 SIZE_LINK = (100, 10) # Longueur, largeur du lien
@@ -96,16 +96,15 @@ class Window(arcade.Window):
                 self.Goos_adj[len(self.Goos) - 1].append((i, dist))
 
     def on_update(self, delta_time):
-        for curr_goo in self.Goos:   
-            curr_goo.center_x += (1 - 2*rd.random()) * NOISE_POSITION
-            curr_goo.center_y += (1 - 2*rd.random()) * NOISE_POSITION
-
         for curr_goo in self.Goos:
-            for plateform in self.plateforms:
-                zone_center_x = plateform.center_x
-                zone_center_y = plateform.center_y + 31
-                if abs(curr_goo.center_x - zone_center_x) <= 40 and abs(curr_goo.center_y - zone_center_y) <= 40:
-                    self.zonestop.append(curr_goo)
+            if curr_goo not in self.zonestop:
+                curr_goo.center_x += (1 - 2*rd.random()) * NOISE_POSITION
+                curr_goo.center_y += (1 - 2*rd.random()) * NOISE_POSITION
+                for plateform in self.plateforms:
+                    zone_center_x = plateform.center_x
+                    zone_center_y = plateform.center_y + 31
+                    if abs(curr_goo.center_x - zone_center_x) <= 40 and abs(curr_goo.center_y - zone_center_y) <= 40:
+                        self.zonestop.append(curr_goo)
 
         DELTA_TIME = delta_time
 
@@ -115,8 +114,8 @@ class Window(arcade.Window):
         for ind in indices:
             current_goo = self.Goos[ind]
             if current_goo not in self.zonestop:
-                accx = 0
-                # accy = -g
+                # accx = 0
+                accy = -g
                 accy = 0
                 for duo in self.Goos_adj[ind]:
                     neighbor_goo = self.Goos[duo[0]]
