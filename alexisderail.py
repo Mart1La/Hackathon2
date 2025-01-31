@@ -35,7 +35,8 @@ class Window(arcade.Window):
     def __init__(self):
         super().__init__(WIDTH, HEIGHT, TITLE)
         arcade.set_background_color(BACKGROUND)
-        self.set_location(400, 100)
+        #arcade.set_background_color(BACKGROUND)
+        self.set_location(800, 100)
         self.plateforms = arcade.SpriteList()
     
     def setup(self):
