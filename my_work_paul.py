@@ -20,16 +20,17 @@ class Goo(arcade.Sprite):
 
 class Window(arcade.Window):
 
+    def __init__(self):
         self.Goos = []
         self.Goos_adj = {}
 
     # Code du clic
-    for other_goo in self.Goos:
-        obstacles_set_reduced = {(x + j, y + i) for i in range(2) for j in range(2)}
-        gap_x = self.center_x - obstacle[0]
-        gap_y = self.center_y - obstacle[1]
-        square_distance = (gap_x)**2 + (gap_y)**2
-        if square_distance <= CRITICAL_DISTANCE**2:
+    def on_update(self, delta_time):
+        for goo in self.Goos:
+            # Code de Louan
+
+
+     
 
 
 # Syntaxe

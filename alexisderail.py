@@ -38,8 +38,8 @@ class Window(arcade.Window):
         pass
     
     def on_mouse_press(self, x, y, button, modifiers):
-        print(x, y)
-        return super().on_mouse_press(x, y, button, modifiers)
+        print(int(x), int(y))
+        return super().on_mouse_press(int(x), int(y), button, modifiers)
 
     def on_draw(self):
         #arcade.start_render()
