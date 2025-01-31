@@ -104,7 +104,7 @@ class Window(arcade.Window):
             for plateform in self.plateforms:
                 zone_center_x = plateform.center_x
                 zone_center_y = plateform.center_y + 31
-                if abs(curr_goo.center_x - zone_center_x) <= 40 and abs(curr_goo.centery_y - zone_center_y) <= 40:
+                if abs(curr_goo.center_x - zone_center_x) <= 40 and abs(curr_goo.center_y - zone_center_y) <= 40:
                     self.zonestop.append(curr_goo)
 
         DELTA_TIME = delta_time
