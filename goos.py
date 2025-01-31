@@ -1,6 +1,3 @@
-"""
-display a single object, inert, at (100, 100)
-"""
 import arcade
 import math
 import random as rd
@@ -22,13 +19,13 @@ Goos[Goos_adj[17][0][1]] # l0 entre le goo "numéro" 17 et son premier voisin
 
 #################################################################################################
 
-
+# Constantes globales
 BACKGROUND = arcade.color.ALMOND
 GOO = "media/goo.png"
-SIZE_GOO = 50 # Taille en pixels, longueur comme largeur comme diametre
+SIZE_GOO = 50   # Taille en pixels, longueur comme largeur comme diametre
 
 WIDTH, LENGTH = 1200, 700
-CRITICAL_DISTANCE = 300 # Distance à partir de laquelle on considere les autres goos
+CRITICAL_DISTANCE = 300     # Distance à partir de laquelle on considere les autres goos
 PLATEFORME = "media/plateforme3.png"
 TITLE = "Worlds of Goo"
 PLATEFORME = "data/plateforme3.png"
@@ -54,7 +51,8 @@ class Goo(arcade.Sprite):
         # # Pour rester dans la fenêtre ; à voir...
         # self.center_x %= HEIGHT
         # self.center_y %= WIDTH
-
+        pass
+    
 class Link(arcade.Sprite):
     """ objet qui est un lien entre deux goos. on veut que la taille du lien (qui va être une image) change. 
     On va donc demander au sprite qui sera un lien de changer de taille pour s'adapter aux goos.
@@ -67,9 +65,9 @@ class Link(arcade.Sprite):
         # Largeur souhaitée en pixels
         self.target_width = math.sqrt((goo1.center_x[1]-goo2.center_x[1])**2+(goo1.center_y[1]-goo2.center_y[1])**2)  
         
-        # Facteur d'échelle
-        factor = self.target_width / SIZE_LINK[0]
-        self.scale = factor
+        # Changement de la longueur du lien, on ne change pas la largeur
+        self.scale_x = self.target_width / SIZE_LINK[0]
+
 
 class Plateform(arcade.Sprite):
 
