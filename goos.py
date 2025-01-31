@@ -7,9 +7,9 @@ import random
 
 
 BACKGROUND = arcade.color.ALMOND
-#IMAGE = "media/arrow-resized.png"
+GOO = "media/goo.png"
 WIDTH, LENGTH = 800, 800
-#OBSTACLE = "media/obstacle-resized.png"
+PLATEFORME = "media/plateforme3.png"
 #DETECTION_RADIUS = 15  # Rayon de détection en pixels (pour transparence)
 #RAYON = 30             # Rayon pour contournement
 #NB_BOID = 20
