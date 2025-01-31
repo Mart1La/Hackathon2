@@ -8,7 +8,10 @@ import random
 
 BACKGROUND = arcade.color.ALMOND
 GOO = "media/goo.png"
-WIDTH, LENGTH = 800, 800
+SIZE_GOO = 50 # Taille en pixels, longueur comme largeur comme diametre
+
+WIDTH, LENGTH = 1200, 800
+CRITICAL_DISTANCE = 300 # Distance à partir de laquelle on considere les autres goos
 PLATEFORME = "media/plateforme3.png"
 #DETECTION_RADIUS = 15  # Rayon de détection en pixels (pour transparence)
 #RAYON = 30             # Rayon pour contournement
