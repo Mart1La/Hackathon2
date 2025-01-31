@@ -5,6 +5,8 @@ import arcade
 import math
 import random
 
+#################################################################################################
+
 ### SYNTAXE A SUIVRE ###
 
 Goos = [Goo() for k in range(20)]
@@ -17,6 +19,8 @@ Goos[17].center_x[1] # position à t du goo "numéro" 17
 
 Goos[Goos_adj[17][0][0]] # numéro du premier voisin du goo "numéro" 17
 Goos[Goos_adj[17][0][1]] # l0 entre le goo "numéro" 17 et son premier voisin
+
+#################################################################################################
 
 
 BACKGROUND = arcade.color.ALMOND
