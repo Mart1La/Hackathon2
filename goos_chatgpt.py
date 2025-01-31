@@ -9,7 +9,7 @@ GOO = "data/goo.png"
 SIZE_GOO = 50   # Taille en pixels, longueur comme largeur comme diamètre
 
 WIDTH, LENGTH = 1200, 700
-CRITICAL_DISTANCE = 300     # Distance à partir de laquelle on considère les autres goos
+CRITICAL_DISTANCE = 200     # Distance à partir de laquelle on considère les autres goos
 TITLE = "Worlds of Goo"
 PLATEFORME = "data/plateforme3.png"
 Spread = 0.1
@@ -63,9 +63,9 @@ class Window(arcade.Window):
         arcade.set_background_color(BACKGROUND)
         self.set_location(100, 30)
         self.plateforms = arcade.SpriteList()
-        # self.links = arcade.SpriteList()
         self.Goos = arcade.SpriteList()
         self.Goos_adj = {}
+        self.zonestop = arcade.SpriteList()
 
     def setup(self):
         for n in range(0, 2):
@@ -78,7 +78,6 @@ class Window(arcade.Window):
         self.plateforms.draw()
         for goo in self.Goos:
             goo.draw_connection()
-        #self.links.draw()  # Dessiner les liens
 
     def on_mouse_press(self, x, y, button, modifiers):
         new_goo = Goo(int(x), int(y))
@@ -89,9 +88,6 @@ class Window(arcade.Window):
             dist = np.sqrt((goo.center_x - new_goo.center_x) ** 2 + (goo.center_y - new_goo.center_y) ** 2)
             if dist < CRITICAL_DISTANCE:
                 goo.connect(new_goo)
-                if goo != new_goo:
-                    #link = Link(goo, new_goo)
-                    #self.links.append(link)
                 if i not in self.Goos_adj:
                     self.Goos_adj[i] = []
                 self.Goos_adj[i].append((len(self.Goos) - 1, dist))
@@ -104,6 +100,13 @@ class Window(arcade.Window):
             curr_goo.center_x += (1 - 2*rd.random()) * NOISE_POSITION
             curr_goo.center_y += (1 - 2*rd.random()) * NOISE_POSITION
 
+        for curr_goo in self.Goos:
+            for plateform in self.plateforms:
+                zone_center_x = plateform.center_x
+                zone_center_y = plateform.center_y + 31
+                if abs(curr_goo.center_x - zone_center_x) <= 40 and abs(curr_goo.centery_y - zone_center_y) <= 40:
+                    self.zonestop.append(curr_goo)
+
         DELTA_TIME = delta_time
 
         indices = list(range(len(self.Goos)))
@@ -111,21 +114,22 @@ class Window(arcade.Window):
 
         for ind in indices:
             current_goo = self.Goos[ind]
-            accx = 0
-            # accy = -g
-            accy = 0
-            for duo in self.Goos_adj[ind]:
-                neighbor_goo = self.Goos[duo[0]]
-                vector = np.array([neighbor_goo.center_x, neighbor_goo.center_y]) - np.array([current_goo.center_x, current_goo.center_y])
-                dist_betw_goos = max(np.linalg.norm(vector), 1)
-                director_vector = vector / dist_betw_goos
-                accx += (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([1,0]))
-                accy += (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([0,1]))
+            if current_goo not in self.zonestop:
+                accx = 0
+                # accy = -g
+                accy = 0
+                for duo in self.Goos_adj[ind]:
+                    neighbor_goo = self.Goos[duo[0]]
+                    vector = np.array([neighbor_goo.center_x, neighbor_goo.center_y]) - np.array([current_goo.center_x, current_goo.center_y])
+                    dist_betw_goos = max(np.linalg.norm(vector), 1)
+                    director_vector = vector / dist_betw_goos
+                    accx += (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([1,0]))
+                    accy += (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([0,1]))
 
-            newx_tdt = 2*current_goo.center_x - current_goo.center_x_previous + accx*(DELTA_TIME)**2
-            newy_tdt = 2*current_goo.center_y - current_goo.center_y_previous + accy*(DELTA_TIME)**2
-            current_goo.center_x_previous, current_goo.center_x = current_goo.center_x, newx_tdt
-            current_goo.center_y_previous, current_goo.center_y = current_goo.center_y, newy_tdt
+                newx_tdt = 2*current_goo.center_x - current_goo.center_x_previous + accx*(DELTA_TIME)**2
+                newy_tdt = 2*current_goo.center_y - current_goo.center_y_previous + accy*(DELTA_TIME)**2
+                current_goo.center_x_previous, current_goo.center_x = current_goo.center_x, newx_tdt
+                current_goo.center_y_previous, current_goo.center_y = current_goo.center_y, newy_tdt
 
 # Lancement du jeu
 window = Window()
