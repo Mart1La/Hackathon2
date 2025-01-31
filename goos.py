@@ -7,14 +7,17 @@ import random
 
 
 BACKGROUND = arcade.color.ALMOND
-#IMAGE = "media/arrow-resized.png"
-WIDTH, LENGTH = 800, 800
-#OBSTACLE = "media/obstacle-resized.png"
+GOO = "media/goo.png"
+SIZE_GOO = 50 # Taille en pixels, longueur comme largeur comme diametre
+
+WIDTH, LENGTH = 1200, 800
+CRITICAL_DISTANCE = 300 # Distance à partir de laquelle on considere les autres goos
+PLATEFORME = "media/plateforme3.png"
 #DETECTION_RADIUS = 15  # Rayon de détection en pixels (pour transparence)
 #RAYON = 30             # Rayon pour contournement
 #NB_BOID = 20
 
-class goo(arcade.Sprite):
+class Goo(arcade.Sprite):
     
     # def __init__(self):
     #     super().__init__(IMAGE)
@@ -58,7 +61,7 @@ class goo(arcade.Sprite):
         # self.prev_x = self.center_x
         # self.prev_y = self.center_y
 
-class plateforme(arcade.Sprite):
+class Plateform(arcade.Sprite):
     # def __init__(self, x, y):
     #     super().__init__(OBSTACLE)
     #     self.center_x = x
