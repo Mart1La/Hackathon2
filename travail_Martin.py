@@ -130,29 +130,15 @@ class Window(arcade.Window):
     # def on_key_release(self, symbol, modifiers):
     #     self.keys_pressed.discard(symbol)
 
-    # def on_update(self, delta_time):
-    #     # Si la flèche gauche est pressée, on tourne vers la gauche
-    #     if arcade.key.LEFT in self.keys_pressed:
-    #         for boid in self.boids:
-    #             boid.angle += 5
-        
-    #     # Si la flèche droite est pressée, on tourne vers la droite
-    #     if arcade.key.RIGHT in self.keys_pressed:
-    #         for boid in self.boids:
-    #             boid.angle -= 5
-        
-    #     if arcade.key.UP in self.keys_pressed:
-    #         for boid in self.boids:
-    #             boid.speed += 50
-    #         self.keys_pressed.discard(arcade.key.UP)
-        
-    #     if arcade.key.DOWN in self.keys_pressed:
-    #         for boid in self.boids:
-    #             boid.speed -= 50
-    #         self.keys_pressed.discard(arcade.key.DOWN)
+    def on_mouse_press(self, x, y, button, modifiers):
+        """ Called when the user presses a mouse button. """
 
-    #     for boid in self.boids:
-    #         boid.on_update(delta_time, self.obstacles)
+        if button == arcade.MOUSE_BUTTON_LEFT:
+            return (x, y)
+
+
+        # for boid in self.boids:
+        #     boid.on_update(delta_time, self.obstacles)
 
 window = Window()
 window.setup()
