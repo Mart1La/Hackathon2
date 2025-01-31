@@ -17,6 +17,8 @@ g = 9.81 * 10
 k = 0.5
 m = 0.4
 
+NOISE_POSITION = 0.2
+
 LINK = "data/link.png"
 SIZE_LINK = (100, 10) # Longueur, largeur du lien
 
@@ -87,6 +89,10 @@ class Window(arcade.Window):
                 self.Goos_adj[len(self.Goos) - 1].append((i, dist))
 
     def on_update(self, delta_time):
+        for curr_goo in self.Goos:   
+            curr_goo.center_x += (1 - 2*rd.random()) * NOISE_POSITION
+            curr_goo.center_y += (1 - 2*rd.random()) * NOISE_POSITION
+
         DELTA_TIME = delta_time
 
         indices = list(range(len(self.Goos)))
@@ -95,20 +101,20 @@ class Window(arcade.Window):
         for ind in indices:
             current_goo = self.Goos[ind]
             accx = 0
-            accy = -g
+            # accy = -g
+            accy = 0
             for duo in self.Goos_adj[ind]:
                 neighbor_goo = self.Goos[duo[0]]
                 vector = np.array([neighbor_goo.center_x, neighbor_goo.center_y]) - np.array([current_goo.center_x, current_goo.center_y])
-                dist_betw_goos = np.linalg.norm(vector)
+                dist_betw_goos = max(np.linalg.norm(vector), 1)
                 director_vector = vector / dist_betw_goos
-                accx += - (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([1,0]))
-                accy += - (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([0,1]))
+                accx += (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([1,0]))
+                accy += (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([0,1]))
 
             newx_tdt = 2*current_goo.center_x - current_goo.center_x_previous + accx*(DELTA_TIME)**2
             newy_tdt = 2*current_goo.center_y - current_goo.center_y_previous + accy*(DELTA_TIME)**2
             current_goo.center_x_previous, current_goo.center_x = current_goo.center_x, newx_tdt
             current_goo.center_y_previous, current_goo.center_y = current_goo.center_y, newy_tdt
-            # print(newy_tdt - current_goo.center_y_previous)
 
 # Lancement du jeu
 window = Window()
