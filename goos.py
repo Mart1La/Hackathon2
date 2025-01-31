@@ -61,7 +61,7 @@ class Goo(arcade.Sprite):
         # self.prev_x = self.center_x
         # self.prev_y = self.center_y
 
-class plateforme(arcade.Sprite):
+class Plateform(arcade.Sprite):
     # def __init__(self, x, y):
     #     super().__init__(OBSTACLE)
     #     self.center_x = x
