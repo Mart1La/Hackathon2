@@ -3,7 +3,7 @@ display a single object, inert, at (100, 100)
 """
 import arcade
 import math
-import random
+import random as rd
 
 #################################################################################################
 
