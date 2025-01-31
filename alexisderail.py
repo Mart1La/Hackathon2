@@ -35,9 +35,13 @@ class Window(arcade.Window):
 
     def on_update(self, delta_time):
         pass
+    
+    def on_mouse_press(self, x, y, button, modifiers):
+        print(x, y)
+        return super().on_mouse_press(x, y, button, modifiers)
 
     def on_draw(self):
-        arcade.start_render()
+        #arcade.start_render()
         self.plateforms.draw()
 
 window = Window()
