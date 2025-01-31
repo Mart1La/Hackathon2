@@ -17,7 +17,7 @@ PLATEFORME = "media/plateforme3.png"
 #RAYON = 30             # Rayon pour contournement
 #NB_BOID = 20
 
-class goo(arcade.Sprite):
+class Goo(arcade.Sprite):
     
     # def __init__(self):
     #     super().__init__(IMAGE)
