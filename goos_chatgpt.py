@@ -66,7 +66,7 @@ class Window(arcade.Window):
         arcade.start_render()
         self.Goos.draw()
         self.plateforms.draw()
-        self.links.draw()  # Dessiner les liens
+        # self.links.draw()  # Dessiner les liens
 
     def on_mouse_press(self, x, y, button, modifiers):
         new_goo = Goo(int(x), int(y))
@@ -93,17 +93,19 @@ class Window(arcade.Window):
         rd.shuffle(indices)
 
         for ind in indices:
-            current_goo = self.Goos[ind]           
-            acc = g*np.array([0, -1])
+            current_goo = self.Goos[ind]
+            accx = 0
+            accy = -g
             for duo in self.Goos_adj[ind]:
-                acc += (k/m) * np.array(
-                    (np.sqrt((current_goo.center_y)**2 + (current_goo.center_x)**2) - np.sqrt((self.Goos[duo[0]].center_y)**2 + (self.Goos[duo[0]].center_x)**2) - duo[1])
-                    * np.sin(np.atan2((self.Goos[duo[0]].center_x - current_goo.center_x) , (current_goo.center_y - self.Goos[duo[0]].center_y))),
-                    (np.sqrt((current_goo.center_y)**2 + (current_goo.center_x)**2) - np.sqrt((self.Goos[duo[0]].center_y)**2 + (self.Goos[duo[0]].center_x)**2) - duo[1])
-                    * np.cos(np.atan2((self.Goos[duo[0]].center_x - current_goo.center_x) , (current_goo.center_y - self.Goos[duo[0]].center_y)))
-                )
-            newx_tdt = 2*current_goo.center_x - current_goo.center_x_previous + acc[0]*(DELTA_TIME)**2
-            newy_tdt = 2*current_goo.center_y - current_goo.center_y_previous + acc[1]*(DELTA_TIME)**2
+                neighbor_goo = self.Goos[duo[0]]
+                vector = np.array([neighbor_goo.center_x, neighbor_goo.center_y]) - np.array([current_goo.center_x, current_goo.center_y])
+                dist_betw_goos = np.linalg.norm(vector)
+                director_vector = vector / dist_betw_goos
+                accx += - (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([1,0]))
+                accy += - (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([0,1]))
+
+            newx_tdt = 2*current_goo.center_x - current_goo.center_x_previous + accx*(DELTA_TIME)**2
+            newy_tdt = 2*current_goo.center_y - current_goo.center_y_previous + accy*(DELTA_TIME)**2
             current_goo.center_x_previous, current_goo.center_x = current_goo.center_x, newx_tdt
             current_goo.center_y_previous, current_goo.center_y = current_goo.center_y, newy_tdt
             # print(newy_tdt - current_goo.center_y_previous)
