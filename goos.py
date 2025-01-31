@@ -34,6 +34,9 @@ TITLE = "Worlds of Goo"
 PLATEFORME = "data/plateforme3.png"
 Spread = 0.1
 
+LINK = "media/link.png"
+SIZE_LINK = (100, 10) # Longueur, largeur
+
 class Goo(arcade.Sprite):
     
     # def __init__(self):
