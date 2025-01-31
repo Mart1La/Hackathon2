@@ -107,6 +107,8 @@ class Window(arcade.Window):
     #     self.keys_pressed.discard(symbol)
 
     def on_update(self, delta_time):
+        for goo in self.Goos:
+        
         pass
 
     #     # Si la flèche droite est pressée, on tourne vers la droite

@@ -27,7 +27,8 @@ class Window(arcade.Window):
     # Code du clic
     def on_update(self, delta_time):
         for goo in self.Goos:
-            
+            # Code de Louan
+
 
      
 
