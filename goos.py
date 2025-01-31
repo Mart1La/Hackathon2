@@ -138,6 +138,7 @@ window.setup()
 arcade.run()
 
 
+# Syntaxe à suivre
 
 Goos = [Goo() for k in range(20)]
 
