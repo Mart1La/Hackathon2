@@ -76,8 +76,9 @@ class Window(arcade.Window):
         for i, goo in enumerate(self.Goos):
             dist = np.sqrt((goo.center_x - new_goo.center_x) ** 2 + (goo.center_y - new_goo.center_y) ** 2)
             if dist < CRITICAL_DISTANCE:
-                link = Link(goo, new_goo)
-                self.links.append(link)
+                if goo != new_goo:
+                    link = Link(goo, new_goo)
+                    self.links.append(link)
                 if i not in self.Goos_adj:
                     self.Goos_adj[i] = []
                 self.Goos_adj[i].append((len(self.Goos) - 1, dist))
