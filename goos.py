@@ -21,7 +21,7 @@ import numpy as np
 #################################################################################################
 
 # Constantes globales
-BACKGROUND = arcade.color.ALMOND
+BACKGROUND = arcade.color.SKY_BLUE
 GOO = "media/goo.png"
 SIZE_GOO = 50   # Taille en pixels, longueur comme largeur comme diametre
 
@@ -31,6 +31,9 @@ PLATEFORME = "media/plateforme3.png"
 TITLE = "Worlds of Goo"
 PLATEFORME = "data/plateforme3.png"
 Spread = 0.1
+g = 0.495
+k = 100
+m = 0.4
 
 LINK = "media/link.png"
 SIZE_LINK = (100, 10) # Longueur, largeur du lien
