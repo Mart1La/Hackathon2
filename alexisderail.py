@@ -4,13 +4,13 @@ import random as rd
 
 BACKGROUND = arcade.color.ALMOND
 WIDTH = 800
-HEIGHT = 600
+HEIGHT = 700
 TITLE = "Worlds of Goo"
 PLATEFORME = "data/plateforme3.png"
 Spread = 0.1
 START = "data/start.png"
 FINISH = "data/finish.png"
-BIERE = "data/biere.png"
+BIERE = "data/biere4.png"
 
 class Plateform(arcade.Sprite):
     def __init__(self, n):
