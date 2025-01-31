@@ -114,9 +114,9 @@ class Window(arcade.Window):
         for ind in indices:
             current_goo = self.Goos[ind]
             if current_goo not in self.zonestop:
-                # accx = 0
+                accx = 0
                 accy = -g
-                accy = 0
+                # accy = 0
                 for duo in self.Goos_adj[ind]:
                     neighbor_goo = self.Goos[duo[0]]
                     vector = np.array([neighbor_goo.center_x, neighbor_goo.center_y]) - np.array([current_goo.center_x, current_goo.center_y])
