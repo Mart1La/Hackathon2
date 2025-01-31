@@ -78,6 +78,22 @@ class Goo(arcade.Sprite):
         # self.prev_x = self.center_x
         # self.prev_y = self.center_y
 
+class Link(arcade.Sprite):
+    """ objet qui est un lien entre deux goos. on veut que la taille du lien (qui va être une image) change. 
+    On va donc demander au sprite qui sera un lien de changer de taille pour s'adapter aux goos.
+    """
+    def __init__(self, goo1 : Goo, goo2 : Goo):
+        super().__init__(LINK)
+        self.center_x, self.center_y = (goo1.center_x[1]+goo2.center_x[1])/2, (goo1.center_y[1]+goo2.center_y[1])/2
+        self.angle = math.pi - math.atan2(goo1.center_y[1]-goo2.center_y[1], goo1.center_x[1]-goo2.center_x[1])
+
+        # Largeur souhaitée en pixels
+        self.target_width = math.sqrt((goo1.center_x[1]-goo2.center_x[1])**2+(goo1.center_y[1]-goo2.center_y[1])**2)  
+        
+        # Facteur d'échelle
+        factor = self.target_width / SIZE_LINK[0]
+        self.scale = factor
+
 class Plateform(arcade.Sprite):
 
     def __init__(self, n):
