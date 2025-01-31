@@ -7,16 +7,16 @@ import numpy as np
 
 ### SYNTAXE A SUIVRE ###
 
-Goos = [Goo() for k in range(20)]
+# Goos = [Goo() for k in range(20)]
 
-Goos_adj = {3: [], 5: [(3, l0_3x5)], 17: [(3,l0_3x17), (5, l0_5x17)]}
+# Goos_adj = {3: [], 5: [(3, l0_3x5)], 17: [(3,l0_3x17), (5, l0_5x17)]}
 
-Goos[17] # goo "numéro" 17
-Goos[17].center_x[0] # position à t - dt du goo "numéro" 17
-Goos[17].center_x[1] # position à t du goo "numéro" 17
+# Goos[17] # goo "numéro" 17
+# Goos[17].center_x[0] # position à t - dt du goo "numéro" 17
+# Goos[17].center_x[1] # position à t du goo "numéro" 17
 
-Goos[Goos_adj[17][0][0]] # numéro du premier voisin du goo "numéro" 17
-Goos[Goos_adj[17][0][1]] # l0 entre le goo "numéro" 17 et son premier voisin
+# Goos[Goos_adj[17][0][0]] # numéro du premier voisin du goo "numéro" 17
+# Goos[Goos_adj[17][0][1]] # l0 entre le goo "numéro" 17 et son premier voisin
 
 #################################################################################################
 
@@ -100,34 +100,29 @@ class Window(arcade.Window):
         arcade.start_render()
         self.plateforms.draw()
 
-    # def on_key_press(self, symbol, modifiers):
-    #     self.keys_pressed.add(symbol)
-    
-    # def on_key_release(self, symbol, modifiers):
-    #     self.keys_pressed.discard(symbol)
+    def on_mouse_press(self, x, y, button, modifiers):
+        self.Goos.append(Goo(int(x), int(y)))
+        return super().on_mouse_press(int(x), int(y), button, modifiers)
 
     def on_update(self, delta_time):
-        for goo in self.Goos:
-        
-        pass
+        n = len(self.Goos)
+        indices = list(range(n))
+        indices = rd.shuffle(indices)
 
-    #     # Si la flèche droite est pressée, on tourne vers la droite
-    #     if arcade.key.RIGHT in self.keys_pressed:
-    #         for boid in self.boids:
-    #             boid.angle -= 5
-        
-    #     if arcade.key.UP in self.keys_pressed:
-    #         for boid in self.boids:
-    #             boid.speed += 50
-    #         self.keys_pressed.discard(arcade.key.UP)
-        
-    #     if arcade.key.DOWN in self.keys_pressed:
-    #         for boid in self.boids:
-    #             boid.speed -= 50
-    #         self.keys_pressed.discard(arcade.key.DOWN)
+        for ind in indices:
+            acc = g*np.array(0, -1)
+            for duo in self.Good_adj[ind]:
+                acc += (k/m) * np.array(
+                    (np.sqrt((self.Goos[ind].center_y[1])**2 + (self.Goos[ind].center_x[1])**2) - np.sqrt((self.Goos[duo[0]].center_y[1])**2 + (self.Goos[duo[0]].center_x[1])**2) - duo[1])
+                    * np.sin(np.arctan2((self.Goos[duo[0]].center_x[1] - self.Goos[ind].center_x[1]) , (self.Goos[ind].center_y[1] - self.Goos[duo[0]].center_y[1]))) ,
+                    (np.sqrt((self.Goos[ind].center_y[1])**2 + (self.Goos[ind].center_x[1])**2) - np.sqrt((self.Goos[duo[0]].center_y[1])**2 + (self.Goos[duo[0]].center_x[1])**2) - duo[1])
+                    * np.cos(np.arctan2((self.Goos[duo[0]].center_x[1] - self.Goos[ind].center_x[1]) , (self.Goos[ind].center_y[1] - self.Goos[duo[0]].center_y[1])))
+                )
+            newx_tdt = 2*self.Goos[ind].center_x[1] - self.Goos[ind].center_x[0] + acc[0]*(delta_time)**2
+            newy_tdt = 2*self.Goos[ind].center_y[1] - self.Goos[ind].center_y[0] + acc[1]*(delta_time)**2
+            self.Goos[ind].center_x = (self.Goos[ind].center_x[1], newx_tdt)
+            self.Goos[ind].center_y = (self.Goos[ind].center_y[1], newy_tdt)
 
-    #     for boid in self.boids:
-    #         boid.on_update(delta_time, self.obstacles)
 
 # Lancement du jeu
 window = Window()
