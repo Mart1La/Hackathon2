@@ -1,145 +1,123 @@
-"""
-display a single object, inert, at (100, 100)
-"""
 import arcade
 import math
-import random
+import random as rd
+import numpy as np
 
+# Variables globales
+BACKGROUND = arcade.color.SKY_BLUE
+GOO = "data/goo.png"
+SIZE_GOO = 50   # Taille en pixels, longueur comme largeur comme diamètre
 
-BACKGROUND = arcade.color.ALMOND
-WIDTH, LENGTH = 1200, 800
+WIDTH, LENGTH = 1200, 700
+CRITICAL_DISTANCE = 300     # Distance à partir de laquelle on considère les autres goos
+TITLE = "Worlds of Goo"
+PLATEFORME = "data/plateforme3.png"
+Spread = 0.1
+g = 9.81 * 10
+k = 0.5
+m = 0.4
 
-GOO = "media/goo.png"
-SIZE_GOO = 50 # Taille en pixels, longueur comme largeur comme diametre
+LINK = "data/link.png"
+SIZE_LINK = (100, 10) # Longueur, largeur du lien
 
-LINK = "media/link.png"
-SIZE_LINK = (100, 10) # Longueur, largeur
-
-CRITICAL_DISTANCE = 300 # Distance à partir de laquelle on considere les autres goos
-PLATEFORM = "media/plateforme3.png"
-#DETECTION_RADIUS = 15  # Rayon de détection en pixels (pour transparence)
-#RAYON = 30             # Rayon pour contournement
-#NB_BOID = 20
-
+# Définition des classes
 class Goo(arcade.Sprite):
     
-    def __init__(self):
-        # super().__init__(GOO)
-        self.center_x, self.center_y = (x1, x2), (y1, y2) #positions a (t-dt, t)
-        #angle et voisin aussi
-        # self.speed = 150    # En pixel par seconde
-        # self.angle = 0      # En degres
-        # self.alpha = 255    # Initialement opaque
-
-        # # Garde en mémoire la position precedente
-        # self.prev_x, self.prev_y = self.center_x, self.center_y
-
-
-    def on_update(self, delta_time, obstacles):
-
-        # self.center_x = (self.center_x + self.speed*delta_time * math.cos(math.radians(self.angle))) % WIDTH
-        # self.center_y = (self.center_y + self.speed*delta_time * math.sin(math.radians(self.angle))) % LENGTH
-        
-        # # Permet de varier le cap
-        # self.angle = (self.angle + random.randint(-4, 4)) % 360
-
-        # # Vérification de la proximité d'un obstacle et rendre transparent si c'est le cas
-        # for obstacle in obstacles:
-        #     distance = math.sqrt((self.center_x - obstacle.center_x) ** 2 + (self.center_y - obstacle.center_y) ** 2)
-
-        #     if distance <= RAYON:
-        #         self.center_x = (self.center_x + (self.center_x - obstacle.center_x)*0.5*(1-(distance/RAYON))) % WIDTH
-        #         self.center_y = (self.center_y + (self.center_y - obstacle.center_y)*0.5*(1-(distance/RAYON))) % LENGTH
-        #         self.angle = self.angle + math.degrees(math.atan2(self.center_y-self.prev_y, self.center_x-self.prev_x))*0.01 # Pour amortir l'effet: v12
-
-        #     if distance <= DETECTION_RADIUS:
-        #         self.alpha = 100
-        #         break
-        # else:
-        #     # Si aucun obstacle n'est proche, garder le boid opaque
-        #     self.alpha = 255
-
-
-        # # Mettre à jour la transparence du boid
-        # self.color = (255, 255, 255, self.alpha)
-        # self.prev_x = self.center_x
-        # self.prev_y = self.center_y
-
-class Plateform(arcade.Sprite):
-    # def __init__(self, x, y):
-    #     super().__init__(OBSTACLE)
-    #     self.center_x = x
-    #     self.center_y = y
+    def __init__(self, x, y):
+        super().__init__(GOO)
+        self.center_x, self.center_y = x, y
+        self.center_x_previous, self.center_y_previous = x, y
+        self.angle = 0
 
 class Link(arcade.Sprite):
-    """ objet qui est un lien entre deux goos. on veut que la taille du lien (qui va être une image) change. 
-    On va donc demander au sprite qui sera un lien de changer de taille pour s'adapter aux goos.
-    """
-    def __init__(self, goo1 : Goo, goo2 : Goo):
+    def __init__(self, goo1: Goo, goo2: Goo):
         super().__init__(LINK)
-        self.center_x, self.center_y = (goo1.center_x[1]+goo2.center_x[1])/2, (goo1.center_y[1]+goo2.center_y[1])/2
-        self.angle = math.pi - math.atan2(goo1.center_y[1]-goo2.center_y[1], goo1.center_x[1]-goo2.center_x[1])
+        self.center_x = (goo1.center_x + goo2.center_x) / 2
+        self.center_y = (goo1.center_y + goo2.center_y) / 2
+        self.angle = (180 / math.pi) * (math.atan2(goo1.center_y - goo2.center_y, goo1.center_x - goo2.center_x))
+        self.target_width = math.sqrt((goo1.center_x - goo2.center_x) ** 2 + (goo1.center_y - goo2.center_y) ** 2)
+        self.scale = self.target_width / SIZE_LINK[0]
 
-        # Largeur souhaitée en pixels
-        self.target_width = math.sqrt((goo1.center_x[1]-goo2.center_x[1])**2+(goo1.center_y[1]-goo2.center_y[1])**2)  
-        
-        # Facteur d'échelle
-        factor = self.target_width / SIZE_LINK[0]
-        self.scale = factor
-        
+class Plateform(arcade.Sprite):
+    def __init__(self, n):
+        super().__init__(PLATEFORME)
+        if n == 0:
+            self.center_x = (WIDTH / 4) * (1 + rd.uniform(-Spread, Spread))
+        else:
+            self.center_x = (3 * WIDTH / 4) * (1 + rd.uniform(-Spread, Spread))
+        self.center_y = (LENGTH / 2) * (1 + rd.uniform(-Spread, Spread))
 
 class Window(arcade.Window):
+    def __init__(self):
+        super().__init__(WIDTH, LENGTH, TITLE)
+        arcade.set_background_color(BACKGROUND)
+        self.set_location(100, 30)
+        self.plateforms = arcade.SpriteList()
+        self.links = arcade.SpriteList()
+        self.Goos = arcade.SpriteList()
+        self.Goos_adj = {}
 
-    # def __init__(self):
-    #     super().__init__(WIDTH, LENGTH, "My first boid")
-    #     arcade.set_background_color(BACKGROUND)
-    #     self.set_location(800, 100)
-    #     self.boids = arcade.SpriteList()
+    def setup(self):
+        for n in range(0, 2):
+            plateform = Plateform(n)
+            self.plateforms.append(plateform)
 
-    #     # Liste pour stocker les obstacles
-    #     self.obstacles = arcade.SpriteList()   
-
-    #     # Garde en mémoire les touches maintenues enfoncées
-    #     self.keys_pressed = set()           
-
-    # def setup(self):
-    #     for _ in range(NB_BOID):
-    #         boid = Boid()
-    #         self.boids.append(boid)
-
-    #     # Créer la grille d'obstacles
-    #     grid_size = 10      # 10x10 obstacles
-    #     spacing = 80        # Espacement de 80px entre chaque obstacle
-        
-    #     for row in range(grid_size):
-    #         for col in range(grid_size):
-    #             # Calculer la position de chaque obstacle
-    #             x = col * spacing + 40  # Décaler un peu pour centrer la grille
-    #             y = row * spacing + 40  # Décaler un peu pour centrer la grille
-    #             obstacle = Obstacle(x, y)
-    #             self.obstacles.append(obstacle)
-
-    # def on_draw(self):
-    #     arcade.start_render()
-    #     self.boids.draw()
-    #     self.obstacles.draw()
-
-    # def on_key_press(self, symbol, modifiers):
-    #     self.keys_pressed.add(symbol)
-    
-    # def on_key_release(self, symbol, modifiers):
-    #     self.keys_pressed.discard(symbol)
+    def on_draw(self):
+        arcade.start_render()
+        self.Goos.draw()
+        self.plateforms.draw()
+        self.links.draw()  # Dessiner les liens
 
     def on_mouse_press(self, x, y, button, modifiers):
-        """ Called when the user presses a mouse button. """
+        new_goo = Goo(int(x), int(y))
+        self.Goos.append(new_goo)
 
-        if button == arcade.MOUSE_BUTTON_LEFT:
-            return (x, y)
+    def on_update(self, delta_time):
+        DELTA_TIME = delta_time
+
+        indices = list(range(len(self.Goos)))
+        rd.shuffle(indices)
+
+        for ind in indices:
+            current_goo = self.Goos[ind]           
+            acc = g*np.array([0, -1])
+            for duo in self.Goos_adj[ind]:
+                acc += (k/m) * np.array(
+                    (np.sqrt((current_goo.center_y)**2 + (current_goo.center_x)**2) - np.sqrt((self.Goos[duo[0]].center_y)**2 + (self.Goos[duo[0]].center_x)**2) - duo[1])
+                    * np.sin(np.atan2((self.Goos[duo[0]].center_x - current_goo.center_x) , (current_goo.center_y - self.Goos[duo[0]].center_y))),
+                    (np.sqrt((current_goo.center_y)**2 + (current_goo.center_x)**2) - np.sqrt((self.Goos[duo[0]].center_y)**2 + (self.Goos[duo[0]].center_x)**2) - duo[1])
+                    * np.cos(np.atan2((self.Goos[duo[0]].center_x - current_goo.center_x) , (current_goo.center_y - self.Goos[duo[0]].center_y)))
+                )
+            newx_tdt = 2*current_goo.center_x - current_goo.center_x_previous + acc[0]*(DELTA_TIME)**2
+            newy_tdt = 2*current_goo.center_y - current_goo.center_y_previous + acc[1]*(DELTA_TIME)**2
+            current_goo.center_x_previous, current_goo.center_x = current_goo.center_x, newx_tdt
+            current_goo.center_y_previous, current_goo.center_y = current_goo.center_y, newy_tdt
+            # print(newy_tdt - current_goo.center_y_previous)
 
 
-        # for boid in self.boids:
-        #     boid.on_update(delta_time, self.obstacles)
+        self.links = arcade.SpriteList()
+        # Create links to nearby goos based on a threshold distance
+        for i, goo in enumerate(self.Goos):
+            for j, goo2 in enumerate(self.Goos):
+                dist = np.sqrt((goo.center_x - goo2.center_x) ** 2 + (goo.center_y - goo2.center_y) ** 2)
+                
+                if dist < CRITICAL_DISTANCE:
+                    link = Link(goo, goo2)
+                    self.links.append(link)
 
+                    if i not in self.Goos_adj:
+                        self.Goos_adj[i] = []
+                    if j not in self.Goos_adj:
+                        self.Goos_adj[j] = []
+                    self.Goos_adj[i].append((len(self.Goos) - 1, dist))
+                    self.Goos_adj[j].append((len(self.Goos) - 1, dist))
+                    if len(self.Goos) - 1 not in self.Goos_adj:
+                        self.Goos_adj[len(self.Goos) - 1] = []
+                    self.Goos_adj[len(self.Goos) - 1].append((i, dist))
+                    self.Goos_adj[len(self.Goos) - 1].append((j, dist))
+        
+# Lancement du jeu
 window = Window()
 window.setup()
 arcade.run()
+

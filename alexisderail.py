@@ -61,7 +61,7 @@ class Window(arcade.Window):
         return super().on_mouse_press(int(x), int(y), button, modifiers)
 
     def on_draw(self):
-        #arcade.start_render()
+        arcade.start_render()
         self.plateforms.draw()
         self.obstacles.draw()
 
