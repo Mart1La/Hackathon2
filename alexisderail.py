@@ -38,7 +38,7 @@ class Window(arcade.Window):
         pass
 
     def on_draw(self):
-        #arcade.start_render()
+        arcade.start_render()
         self.plateforms.draw()
 
 window = Window()
