@@ -65,10 +65,11 @@ class Goo(arcade.Sprite):
 
     Goos = [Goo() for k in range(20)]
 
-    Goos_adj = {1: [(2,l0_2), (7, l0_7)], 2: [(3, l0_3)], 3: []}
+    Goos_adj = {3: [], 5: [(3, l0_3x5)], 17: [(3,l0_3x17), (5, l0_5x17)]}
 
-    Goos[0] # premier goo de la liste
-    Goos[0].center_x[1] # position à t du premier goo de la liste
+    Goos[17] # goo "numéro" 17
+    Goos[17].center_x[0] # position à t - dt du goo "numéro" 17
+    Goos[17].center_x[1] # position à t du goo "numéro" 17
 
-    Goos[Goos_adj[1][0][0]] # premier voisin du premier sommet
-    Goos[Goos_adj[1][0][1]] # l0 entre le premier sommet et son premier voisin
+    Goos[Goos_adj[17][0][0]] # numéro du premier voisin du goo "numéro" 17
+    Goos[Goos_adj[17][0][1]] # l0 entre le goo "numéro" 17 et son premier voisin
