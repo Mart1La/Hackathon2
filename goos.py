@@ -5,6 +5,19 @@ import arcade
 import math
 import random
 
+### SYNTAXE A SUIVRE ###
+
+Goos = [Goo() for k in range(20)]
+
+Goos_adj = {3: [], 5: [(3, l0_3x5)], 17: [(3,l0_3x17), (5, l0_5x17)]}
+
+Goos[17] # goo "numéro" 17
+Goos[17].center_x[0] # position à t - dt du goo "numéro" 17
+Goos[17].center_x[1] # position à t du goo "numéro" 17
+
+Goos[Goos_adj[17][0][0]] # numéro du premier voisin du goo "numéro" 17
+Goos[Goos_adj[17][0][1]] # l0 entre le goo "numéro" 17 et son premier voisin
+
 
 BACKGROUND = arcade.color.ALMOND
 GOO = "media/goo.png"
