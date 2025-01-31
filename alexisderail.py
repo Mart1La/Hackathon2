@@ -10,9 +10,9 @@ PLATEFORME = "data/plateforme3.png"
 Spread = 0.1
 START = "data/start.png"
 FINISH = "data/finish.png"
+BIERE = "data/biere.png"
 
 class Plateform(arcade.Sprite):
-
     def __init__(self, n):
         super().__init__(PLATEFORME)
         if n == 0:
@@ -20,6 +20,12 @@ class Plateform(arcade.Sprite):
         else : 
             self.center_x = (3 * WIDTH / 4) * (1+rd.uniform(-Spread, Spread))
         self.center_y = (HEIGHT / 2)*(1+rd.uniform(-Spread, Spread))
+
+class Obstacle(arcade.Sprite):
+    def __init__(self):
+        super().__init__(BIERE)
+        self.center_x = WIDTH / 2
+        self.center_y = 3 * HEIGHT / 4
 
 class StartOrFinish(arcade.Sprite):
     def __init__(self, n, x, y):
@@ -31,13 +37,13 @@ class StartOrFinish(arcade.Sprite):
         self.center_y = y
 
 class Window(arcade.Window):
-
     def __init__(self):
         super().__init__(WIDTH, HEIGHT, TITLE)
         arcade.set_background_color(BACKGROUND)
         #arcade.set_background_color(BACKGROUND)
         self.set_location(800, 100)
         self.plateforms = arcade.SpriteList()
+        self.obstacles = arcade.SpriteList()
     
     def setup(self):
         for n in range(0, 2):
@@ -45,6 +51,7 @@ class Window(arcade.Window):
             startorfinish = StartOrFinish(n, plateform.center_x, plateform.center_y-40)
             self.plateforms.append(plateform)
             self.plateforms.append(startorfinish)
+        self.obstacles.append(Obstacle())
 
     def on_update(self, delta_time):
         pass
@@ -56,6 +63,7 @@ class Window(arcade.Window):
     def on_draw(self):
         #arcade.start_render()
         self.plateforms.draw()
+        self.obstacles.draw()
 
 window = Window()
 window.setup()
