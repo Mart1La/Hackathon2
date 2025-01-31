@@ -39,47 +39,21 @@ SIZE_LINK = (100, 10) # Longueur, largeur
 
 class Goo(arcade.Sprite):
     
-    # def __init__(self):
-    #     super().__init__(IMAGE)
-    #     self.center_x, self.center_y = 100, 100
-    #     self.speed = 150    # En pixel par seconde
-    #     self.angle = 0      # En degres
-    #     self.alpha = 255    # Initialement opaque
-
-    #     # Garde en mémoire la position precedente
-    #     self.prev_x, self.prev_y = self.center_x, self.center_y
-
-
+    def __init__(self, x, y):
+        super().__init__(GOO)
+        self.center_x, self.center_y = (x, x), (y, y) # selon le clic
+        self.angle = 0
+    
     def on_update(self, delta_time):
-        pass
-
-        # self.center_x = (self.center_x + self.speed*delta_time * math.cos(math.radians(self.angle))) % WIDTH
-        # self.center_y = (self.center_y + self.speed*delta_time * math.sin(math.radians(self.angle))) % LENGTH
         
-        # # Permet de varier le cap
-        # self.angle = (self.angle + random.randint(-4, 4)) % 360
+        # Rajouter une variation très faible au centre du goo
+        # NOISE_POSITION = 5
+        # self.center_x[1] += (1 - 2*random.random()) * NOISE_POSITION
+        # self.center_y[1] += (1 - 2*random.random()) * NOISE_POSITION
 
-        # # Vérification de la proximité d'un obstacle et rendre transparent si c'est le cas
-        # for obstacle in obstacles:
-        #     distance = math.sqrt((self.center_x - obstacle.center_x) ** 2 + (self.center_y - obstacle.center_y) ** 2)
-
-        #     if distance <= RAYON:
-        #         self.center_x = (self.center_x + (self.center_x - obstacle.center_x)*0.5*(1-(distance/RAYON))) % WIDTH
-        #         self.center_y = (self.center_y + (self.center_y - obstacle.center_y)*0.5*(1-(distance/RAYON))) % LENGTH
-        #         self.angle = self.angle + math.degrees(math.atan2(self.center_y-self.prev_y, self.center_x-self.prev_x))*0.01 # Pour amortir l'effet: v12
-
-        #     if distance <= DETECTION_RADIUS:
-        #         self.alpha = 100
-        #         break
-        # else:
-        #     # Si aucun obstacle n'est proche, garder le boid opaque
-        #     self.alpha = 255
-
-
-        # # Mettre à jour la transparence du boid
-        # self.color = (255, 255, 255, self.alpha)
-        # self.prev_x = self.center_x
-        # self.prev_y = self.center_y
+        # # Pour rester dans la fenêtre ; à voir...
+        # self.center_x %= HEIGHT
+        # self.center_y %= WIDTH
 
 class Link(arcade.Sprite):
     """ objet qui est un lien entre deux goos. on veut que la taille du lien (qui va être une image) change. 
@@ -114,6 +88,8 @@ class Window(arcade.Window):
         arcade.set_background_color(BACKGROUND)
         self.set_location(400, 100)
         self.plateforms = arcade.SpriteList()
+        self.Goos = []
+        self.Goos_adj = {}
 
     def setup(self):
         for n in range(0, 2):
