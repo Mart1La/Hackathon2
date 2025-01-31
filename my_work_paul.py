@@ -45,3 +45,20 @@ class Window(arcade.Window):
 
 # Goos[Goos_adj[17][0][0]] # numéro du premier voisin du goo "numéro" 17
 # Goos[Goos_adj[17][0][1]] # l0 entre le goo "numéro" 17 et son premier voisin
+
+    def on_mouse_press(self, x, y, button, modifiers):
+        new_goo = Goo(int(x), int(y))
+        self.Goos.append(new_goo)
+
+        # Create links to nearby goos based on a threshold distance
+        for i, goo in enumerate(self.Goos):
+            dist = np.sqrt((goo.center_x[1] - new_goo.center_x[1])**2 + (goo.center_y[1] - new_goo.center_y[1])**2)
+            if dist < CRITICAL_DISTANCE:
+                link = Link(goo, new_goo)
+                self.links.append(link)
+                if i not in self.Goos_adj:
+                    self.Goos_adj[i] = []
+                self.Goos_adj[i].append((len(self.Goos)-1, dist))
+                if len(self.Goos)-1 not in self.Goos_adj:
+                    self.Goos_adj[len(self.Goos)-1] = []
+                self.Goos_adj[len(self.Goos)-1].append((i, dist))
