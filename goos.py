@@ -46,8 +46,20 @@ class Goo(arcade.Sprite):
         self.center_x, self.center_y = (x, x), (y, y) # selon le clic
         self.angle = 0
     
-    def on_update(self, delta_time):
-        
+    def new_coordinates(self, delta_time, ind):
+        acc = g*np.array(0, -1)
+        for duo in window.Good_adj[ind]:
+            acc += (k/m) * np.array(
+                (np.sqrt((window.Goos[ind].center_y[1])**2 + (window.Goos[ind].center_x[1])**2) - np.sqrt((window.Goos[duo[0]].center_y[1])**2 + (window.Goos[duo[0]].center_x[1])**2) - duo[1])
+                * np.sin(np.arctan2((window.Goos[duo[0]].center_x[1] - window.Goos[ind].center_x[1]) , (window.Goos[ind].center_y[1] - window.Goos[duo[0]].center_y[1]))) ,
+                (np.sqrt((window.Goos[ind].center_y[1])**2 + (window.Goos[ind].center_x[1])**2) - np.sqrt((window.Goos[duo[0]].center_y[1])**2 + (window.Goos[duo[0]].center_x[1])**2) - duo[1])
+                * np.cos(np.arctan2((window.Goos[duo[0]].center_x[1] - window.Goos[ind].center_x[1]) , (window.Goos[ind].center_y[1] - window.Goos[duo[0]].center_y[1])))
+            )
+        newx_tdt = 2*window.Goos[ind].center_x[1] - window.Goos[ind].center_x[0] + acc[0]*(delta_time)**2
+        newy_tdt = 2*window.Goos[ind].center_y[1] - window.Goos[ind].center_y[0] + acc[1]*(delta_time)**2
+        window.Goos[ind].center_x = (window.Goos[ind].center_x[1], newx_tdt)
+        window.Goos[ind].center_y = (window.Goos[ind].center_y[1], newy_tdt)
+
         # Rajouter une variation très faible au centre du goo
         # NOISE_POSITION = 5
         # self.center_x[1] += (1 - 2*random.random()) * NOISE_POSITION
@@ -56,7 +68,6 @@ class Goo(arcade.Sprite):
         # Pour rester dans la fenêtre ; à voir...
         # self.center_x %= HEIGHT
         # self.center_y %= WIDTH
-        pass
     
 class Link(arcade.Sprite):
     """ objet qui est un lien entre deux goos. on veut que la taille du lien (qui va être une image) change. 
@@ -113,20 +124,8 @@ class Window(arcade.Window):
         indices = rd.shuffle(indices)
 
         for ind in indices:
-            acc = g*np.array(0, -1)
-            for duo in self.Good_adj[ind]:
-                acc += (k/m) * np.array(
-                    (np.sqrt((self.Goos[ind].center_y[1])**2 + (self.Goos[ind].center_x[1])**2) - np.sqrt((self.Goos[duo[0]].center_y[1])**2 + (self.Goos[duo[0]].center_x[1])**2) - duo[1])
-                    * np.sin(np.arctan2((self.Goos[duo[0]].center_x[1] - self.Goos[ind].center_x[1]) , (self.Goos[ind].center_y[1] - self.Goos[duo[0]].center_y[1]))) ,
-                    (np.sqrt((self.Goos[ind].center_y[1])**2 + (self.Goos[ind].center_x[1])**2) - np.sqrt((self.Goos[duo[0]].center_y[1])**2 + (self.Goos[duo[0]].center_x[1])**2) - duo[1])
-                    * np.cos(np.arctan2((self.Goos[duo[0]].center_x[1] - self.Goos[ind].center_x[1]) , (self.Goos[ind].center_y[1] - self.Goos[duo[0]].center_y[1])))
-                )
-            newx_tdt = 2*self.Goos[ind].center_x[1] - self.Goos[ind].center_x[0] + acc[0]*(delta_time)**2
-            newy_tdt = 2*self.Goos[ind].center_y[1] - self.Goos[ind].center_y[0] + acc[1]*(delta_time)**2
-            self.Goos[ind].center_x = (self.Goos[ind].center_x[1], newx_tdt)
-            self.Goos[ind].center_y = (self.Goos[ind].center_y[1], newy_tdt)
-
-
+            self.new_coordinates(delta_time, ind)
+            
 # Lancement du jeu
 
 window = Window()
