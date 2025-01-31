@@ -30,15 +30,23 @@ class Goo(arcade.Sprite):
         self.center_x, self.center_y = x, y
         self.center_x_previous, self.center_y_previous = x, y
         self.angle = 0
+        self.connected_goo = []
 
-# class Link(arcade.Sprite):
-#     def __init__(self, goo1: Goo, goo2: Goo):
-#         super().__init__(LINK)
-#         self.center_x = (goo1.center_x + goo2.center_x) / 2
-#         self.center_y = (goo1.center_y + goo2.center_y) / 2
-#         self.angle = (180 / math.pi) * (math.pi - math.atan2(goo1.center_y - goo2.center_y, goo1.center_x - goo2.center_x))
-#         self.target_width = math.sqrt((goo1.center_x - goo2.center_x) ** 2 + (goo1.center_y - goo2.center_y) ** 2)
-#         self.scale_x = self.target_width / SIZE_LINK[0]
+    def connect(self, other_goo):
+        self.connected_goo.append(other_goo)
+
+    def draw_connection(self):
+        for other_goo in self.connected_goo:
+            arcade.draw_line(self.center_x, self.center_y, other_goo.center_x, other_goo.center_y, arcade.color.BLACK, 2)
+
+class Link(arcade.Sprite):
+    def __init__(self, goo1: Goo, goo2: Goo):
+        super().__init__(LINK)
+        self.center_x = (goo1.center_x + goo2.center_x) / 2
+        self.center_y = (goo1.center_y + goo2.center_y) / 2
+        self.angle = (180 / math.pi) * math.atan2(goo1.center_y - goo2.center_y, goo1.center_x - goo2.center_x)
+        self.target_width = math.sqrt((goo1.center_x - goo2.center_x) ** 2 + (goo1.center_y - goo2.center_y) ** 2)
+        self.scale_x = self.target_width / SIZE_LINK[0]
 
 class Plateform(arcade.Sprite):
     def __init__(self, n):
@@ -68,7 +76,9 @@ class Window(arcade.Window):
         arcade.start_render()
         self.Goos.draw()
         self.plateforms.draw()
-        # self.links.draw()  # Dessiner les liens
+        for goo in self.Goos:
+            goo.draw_connection()
+        #self.links.draw()  # Dessiner les liens
 
     def on_mouse_press(self, x, y, button, modifiers):
         new_goo = Goo(int(x), int(y))
@@ -78,9 +88,10 @@ class Window(arcade.Window):
         for i, goo in enumerate(self.Goos):
             dist = np.sqrt((goo.center_x - new_goo.center_x) ** 2 + (goo.center_y - new_goo.center_y) ** 2)
             if dist < CRITICAL_DISTANCE:
-                # if goo != new_goo:
-                #     link = Link(goo, new_goo)
-                #     self.links.append(link)
+                goo.connect(new_goo)
+                if goo != new_goo:
+                    #link = Link(goo, new_goo)
+                    #self.links.append(link)
                 if i not in self.Goos_adj:
                     self.Goos_adj[i] = []
                 self.Goos_adj[i].append((len(self.Goos) - 1, dist))
