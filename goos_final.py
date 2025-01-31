@@ -9,15 +9,15 @@ GOO = "data/goo.png"
 SIZE_GOO = 50   # Taille en pixels, longueur comme largeur comme diamètre
 
 WIDTH, LENGTH = 1200, 700
-CRITICAL_DISTANCE = 200     # Distance à partir de laquelle on considère les autres goos
+CRITICAL_DISTANCE = 100     # Distance à partir de laquelle on considère les autres goos
 TITLE = "Worlds of Goo"
 PLATEFORME = "data/plateforme3.png"
 Spread = 0.1
 g = 9.81 * 5
-k = 0.5
+k = 20
 m = 0.4
 
-# NOISE_POSITION = 0.2
+NOISE_POSITION = 0
 
 LINK = "data/link.png"
 SIZE_LINK = (100, 10) # Longueur, largeur du lien
@@ -103,7 +103,7 @@ class Window(arcade.Window):
                 for plateform in self.plateforms:
                     zone_center_x = plateform.center_x
                     zone_center_y = plateform.center_y + 31
-                    if abs(curr_goo.center_x - zone_center_x) <= 40 and abs(curr_goo.center_y - zone_center_y) <= 40:
+                    if abs(curr_goo.center_x - zone_center_x) <= 20 and abs(curr_goo.center_y - zone_center_y) <= 20:
                         self.zonestop.append(curr_goo)
 
         DELTA_TIME = delta_time
