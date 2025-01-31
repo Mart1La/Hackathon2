@@ -136,3 +136,15 @@ class Window(arcade.Window):
 window = Window()
 window.setup()
 arcade.run()
+
+
+
+Goos = [Goo() for k in range(20)]
+
+Goos_adj = {1: [(2,l0_2), (7, l0_7)], 2: [(3, l0_3)], 3: []}
+
+Goos[0] # premier goo de la liste
+Goos[1].center_x[1] # position à t du premier goo de la liste
+
+Goos[Goos_adj[1][0][0]] # premier voisin du premier sommet
+Goos[Goos_adj[1][0][1]] # l0 entre le premier sommet et son premier voisin
