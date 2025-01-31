@@ -33,8 +33,9 @@ PLATEFORME = "data/plateforme3.png"
 Spread = 0.1
 
 LINK = "media/link.png"
-SIZE_LINK = (100, 10) # Longueur, largeur
+SIZE_LINK = (100, 10) # Longueur, largeur du lien
 
+# Définition des classes
 class Goo(arcade.Sprite):
     
     def __init__(self, x, y):
@@ -126,6 +127,7 @@ class Window(arcade.Window):
     #     for boid in self.boids:
     #         boid.on_update(delta_time, self.obstacles)
 
+# Lancement du jeu
 window = Window()
 window.setup()
 arcade.run()
