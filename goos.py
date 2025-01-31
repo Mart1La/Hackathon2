@@ -46,8 +46,8 @@ class Goo(arcade.Sprite):
         self.angle = 0
     
     def new_coordinates(self, delta_time, ind):
-        acc = g*np.array(0, -1)
-        for duo in window.Good_adj[ind]:
+        acc = g*np.array([0, -1])
+        for duo in window.Goos_adj[ind]:
             acc += (k/m) * np.array(
                 (np.sqrt((window.Goos[ind].center_y[1])**2 + (window.Goos[ind].center_x[1])**2) - np.sqrt((window.Goos[duo[0]].center_y[1])**2 + (window.Goos[duo[0]].center_x[1])**2) - duo[1])
                 * np.sin(np.arctan2((window.Goos[duo[0]].center_x[1] - window.Goos[ind].center_x[1]) , (window.Goos[ind].center_y[1] - window.Goos[duo[0]].center_y[1]))) ,
@@ -102,7 +102,8 @@ class Window(arcade.Window):
         arcade.set_background_color(BACKGROUND)
         self.set_location(400, 100)
         self.plateforms = arcade.SpriteList()
-        self.Goos = []
+        self.links = arcade.SpriteList()
+        self.Goos = arcade.SpriteList()
         self.Goos_adj = {}
 
     def setup(self):
@@ -131,14 +132,12 @@ class Window(arcade.Window):
                     self.Goos_adj[len(self.Goos)-1] = []
                 self.Goos_adj[len(self.Goos)-1].append((i, dist))
 
-        # return super().on_mouse_press(int(x), int(y), button, modifiers)
-
     def on_update(self, delta_time):
         indices = list(range(len(self.Goos)))
         rd.shuffle(indices)
 
         for ind in indices:
-            self.new_coordinates(delta_time, ind)
+            self.Goos[ind].new_coordinates(delta_time, ind)
 
 
 # Lancement du jeu
