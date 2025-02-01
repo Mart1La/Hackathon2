@@ -4,7 +4,8 @@ import random as rd
 import numpy as np
 
 # Variables globales
-BACKGROUND = arcade.color.SKY_BLUE
+BACKGROUND_COLOR = arcade.color.SKY_BLUE
+BACKGROUND = "data/blue_sky.jpg"
 GOO = "data/goo.png"
 SIZE_GOO = 50   # Taille en pixels, longueur comme largeur comme diamètre
 
@@ -14,13 +15,11 @@ TITLE = "Worlds of Goo"
 PLATEFORME = "data/plateforme3.png"
 Spread = 0.1
 g = 9.81 * 5
-k = 20
-m = 0.4
+k = 25
+m = 1
+d = 1
 
 NOISE_POSITION = 0
-
-LINK = "data/link.png"
-SIZE_LINK = (100, 10) # Longueur, largeur du lien
 
 # Définition des classes
 class Goo(arcade.Sprite):
@@ -37,16 +36,7 @@ class Goo(arcade.Sprite):
 
     def draw_connection(self):
         for other_goo in self.connected_goo:
-            arcade.draw_line(self.center_x, self.center_y, other_goo.center_x, other_goo.center_y, arcade.color.BLACK, 2)
-
-class Link(arcade.Sprite):
-    def __init__(self, goo1: Goo, goo2: Goo):
-        super().__init__(LINK)
-        self.center_x = (goo1.center_x + goo2.center_x) / 2
-        self.center_y = (goo1.center_y + goo2.center_y) / 2
-        self.angle = (180 / math.pi) * math.atan2(goo1.center_y - goo2.center_y, goo1.center_x - goo2.center_x)
-        self.target_width = math.sqrt((goo1.center_x - goo2.center_x) ** 2 + (goo1.center_y - goo2.center_y) ** 2)
-        self.scale_x = self.target_width / SIZE_LINK[0]
+            arcade.draw_line(self.center_x, self.center_y, other_goo.center_x, other_goo.center_y, arcade.color.BLACK, 5)
 
 class Plateform(arcade.Sprite):
     def __init__(self, n):
@@ -60,20 +50,24 @@ class Plateform(arcade.Sprite):
 class Window(arcade.Window):
     def __init__(self):
         super().__init__(WIDTH, LENGTH, TITLE)
-        arcade.set_background_color(BACKGROUND)
+        # arcade.set_background_color(BACKGROUND_COLOR)
         self.set_location(100, 30)
+        self.background = None
         self.plateforms = arcade.SpriteList()
         self.Goos = arcade.SpriteList()
         self.Goos_adj = {}
         self.zonestop = arcade.SpriteList()
 
     def setup(self):
+        self.background = arcade.load_texture(BACKGROUND)
+
         for n in range(0, 2):
             plateform = Plateform(n)
             self.plateforms.append(plateform)
 
     def on_draw(self):
         arcade.start_render()
+        arcade.draw_lrwh_rectangle_textured(0, 0, WIDTH, LENGTH, self.background)
         self.Goos.draw()
         self.plateforms.draw()
         for goo in self.Goos:
@@ -83,7 +77,7 @@ class Window(arcade.Window):
         new_goo = Goo(int(x), int(y))
         self.Goos.append(new_goo)
 
-        # Create links to nearby goos based on a threshold distance
+        # On a créé un dico d'adjacence qui contient les voisins de chaque sommet et la longueur à vide des ressorts
         for i, goo in enumerate(self.Goos):
             dist = np.sqrt((goo.center_x - new_goo.center_x) ** 2 + (goo.center_y - new_goo.center_y) ** 2)
             if dist < CRITICAL_DISTANCE:
@@ -98,8 +92,10 @@ class Window(arcade.Window):
     def on_update(self, delta_time):
         for curr_goo in self.Goos:
             if curr_goo not in self.zonestop:
+                # faible bruit sur la position, intéressant pour les tests sans gravité
                 curr_goo.center_x += (1 - 2*rd.random()) * NOISE_POSITION
                 curr_goo.center_y += (1 - 2*rd.random()) * NOISE_POSITION
+                # le goo doit se coller s'il est très proche de la plateforme, ie dans la zonestop
                 for plateform in self.plateforms:
                     zone_center_x = plateform.center_x
                     zone_center_y = plateform.center_y + 31
@@ -124,6 +120,11 @@ class Window(arcade.Window):
                     director_vector = vector / dist_betw_goos
                     accx += (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([1,0]))
                     accy += (k/m) * (dist_betw_goos - duo[1]) * np.dot(director_vector, np.array([0,1]))
+                # ajout de frottements linéaires
+                speed_vector = np.array([current_goo.center_x - current_goo.center_x_previous, current_goo.center_y - current_goo.center_y_previous])/DELTA_TIME
+                friction_force = - (d/m) * speed_vector
+                accx += np.dot(friction_force, np.array([1,0]))
+                accy += np.dot(friction_force, np.array([0,1]))
 
                 newx_tdt = 2*current_goo.center_x - current_goo.center_x_previous + accx*(DELTA_TIME)**2
                 newy_tdt = 2*current_goo.center_y - current_goo.center_y_previous + accy*(DELTA_TIME)**2
